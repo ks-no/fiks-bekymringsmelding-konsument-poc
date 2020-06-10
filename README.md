@@ -17,3 +17,8 @@ Når produksjonskode skal utvikles er det anbefalt å lage gode rutiner for logg
 1. Dere trenger også virksomhetssertfikat for test-miljøet
 
 Oppdater konfigurasjon.properties og start applikasjonen med oppstartsparametre `-k sti/konfigurasjon.properties`
+
+## Mer informasjon
+* [Nasjonal portal for bekymringsmelding](https://ks-no.github.io/fiks-plattform/tjenester/bekymringsmelding)
+* [Fiks-IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksio)
+* [Fiks-IO protokollen for bekymringsmelding](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll)
