@@ -14,6 +14,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <inceptionYear>2020</inceptionYear>
     <build>
         <plugins>
             <plugin>
