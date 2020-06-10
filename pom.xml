@@ -7,7 +7,13 @@
     <groupId>no.ks.fiks</groupId>
     <artifactId>fiks-bekymringsmelding-konsument-poc</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <build>
         <plugins>
             <plugin>
