@@ -55,25 +55,33 @@ public class Konfigurasjon {
         return properties.getProperty("virksomhetssertifikat.keyPassword");
     }
 
-    public String getDifiIntegrasjonKlientId() {
-        return properties.getProperty("difi.integrasjon.klientId");
+    public String getMaskinportenKlientId() {
+        return properties.getProperty("digdir.maskinporten.klientId");
     }
 
-    public String getFiksIntegrationPassword() {
-        return properties.getProperty("fiks.integrationPassword");
+    public String getMaskinportenAudience() {
+        return properties.getProperty("digdir.maskinporten.audience");
     }
 
-    public UUID getFiksIntegrationId() {
-        return UUID.fromString(properties.getProperty("fiks.integrationId"));
+    public String getMaskinportenTokenEndpoint() {
+        return properties.getProperty("digdir.maskinporten.tokenEndpoint");
     }
 
-    public UUID getFiksIoKontoId() {
-        return UUID.fromString(properties.getProperty("fiks.io.kontoId"));
+    public String getMottakerFiksIntegrationPassword() {
+        return properties.getProperty("mottaker.integrasjonPassord");
     }
 
-    public PrivateKey getFiksIoPrivateKey() {
+    public UUID getMottakerFiksIntegrationId() {
+        return UUID.fromString(properties.getProperty("mottaker.integrasjonId"));
+    }
+
+    public UUID getMottakerFiksIoKontoId() {
+        return UUID.fromString(properties.getProperty("mottaker.fiks.io.kontoId"));
+    }
+
+    public PrivateKey getMottakerFiksIoPrivateKey() {
         try {
-            byte[] keyArray = Files.readAllBytes(Paths.get(properties.getProperty("fiks.io.privatekey.path")));
+            byte[] keyArray = Files.readAllBytes(Paths.get(properties.getProperty("mottaker.fiks.io.privatekey.path")));
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyArray);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             return keyFactory.generatePrivate(keySpec);
@@ -82,7 +90,23 @@ public class Konfigurasjon {
         }
     }
 
-    public String getDestinasjoskatalog() {
-        return properties.getProperty("bekymringsmeldinger.destinasjonskatalog");
+    public String getMottakerDestinasjoskatalog() {
+        return properties.getProperty("mottaker.destinasjonskatalog");
+    }
+
+    public String getAvsenderBekymringsmeldingBaseUrl() {
+        return properties.getProperty("avsender.baseUrl");
+    }
+
+    public UUID getAvsenderFiksOrdId() {
+        return UUID.fromString(properties.getProperty("avsender.fiksOrdId"));
+    }
+
+    public String getAvsenderFiksIntegrationPassword() {
+        return properties.getProperty("avsender.integrasjonPassord");
+    }
+
+    public String getAvsenderFiksIntegrationId() {
+        return properties.getProperty("avsender.integrasjonId");
     }
 }

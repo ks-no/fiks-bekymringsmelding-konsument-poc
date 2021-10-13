@@ -14,18 +14,18 @@ import no.ks.fiks.io.client.model.KontoId;
 import no.ks.fiks.poc.bekymringsmelding.fiksio.NedlastningAvBekymringsmeldinger;
 import org.apache.commons.cli.*;
 
-public class Applikasjon {
+public class MottakAvBekymringsmelding {
     public static void main(String[] args) {
         CommandLine cmd = getCommandLine(args);
         Konfigurasjon konfigurasjon = new Konfigurasjon(cmd.getOptionValue("konfigurasjon"));
 
         final FiksIOKonfigurasjon fiksIOKonfigurasjon = FiksIOKonfigurasjon.defaultTestConfiguration(
-                konfigurasjon.getDifiIntegrasjonKlientId(),
-                konfigurasjon.getFiksIntegrationId(),
-                konfigurasjon.getFiksIntegrationPassword(),
+                konfigurasjon.getMaskinportenKlientId(),
+                konfigurasjon.getMottakerFiksIntegrationId(),
+                konfigurasjon.getMottakerFiksIntegrationPassword(),
                 KontoKonfigurasjon.builder()
-                        .kontoId(new KontoId(konfigurasjon.getFiksIoKontoId()))
-                        .privatNokkel(konfigurasjon.getFiksIoPrivateKey())
+                        .kontoId(new KontoId(konfigurasjon.getMottakerFiksIoKontoId()))
+                        .privatNokkel(konfigurasjon.getMottakerFiksIoPrivateKey())
                         .build(),
                 VirksomhetssertifikatKonfigurasjon.builder()
                         .keyStore(konfigurasjon.getVirksomhetssertifikatKeyStore())
@@ -37,7 +37,7 @@ public class Applikasjon {
         final FiksIOKlientFactory fiksIOKlientFactory = new FiksIOKlientFactory(fiksIOKonfigurasjon);
         final FiksIOKlient fiksIOKlient = fiksIOKlientFactory.build();
 
-        fiksIOKlient.newSubscription(new NedlastningAvBekymringsmeldinger(konfigurasjon.getDestinasjoskatalog()));
+        fiksIOKlient.newSubscription(new NedlastningAvBekymringsmeldinger(konfigurasjon.getMottakerDestinasjoskatalog()));
     }
 
     public static CommandLine getCommandLine(String[] args) {
@@ -53,7 +53,7 @@ public class Applikasjon {
             return new DefaultParser().parse(options, args);
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(Applikasjon.class.getSimpleName(), options);
+            formatter.printHelp(MottakAvBekymringsmelding.class.getSimpleName(), options);
             throw new RuntimeException(e);
         }
     }

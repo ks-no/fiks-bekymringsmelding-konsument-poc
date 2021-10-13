@@ -13,8 +13,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class NedlastningAvBekymringsmeldinger implements BekymringsmeldingSubscriber {
-    private static final String INPUT_FILNAVN = "bekymringsmelding.pdf";
-    private static final String OUTPUT_FILNAVN = "bekymringsmelding-%s.pdf";
     private final String outputKatalog;
 
     public NedlastningAvBekymringsmeldinger(String outputKatalog) {
@@ -33,33 +31,36 @@ public class NedlastningAvBekymringsmeldinger implements BekymringsmeldingSubscr
 
     private void lastnedOgLagreBekymringsmelding(MottattMelding mottattMelding, SvarSender svarSender) {
         try {
-            ByteArrayOutputStream baos = getFilFraZip(mottattMelding.getDekryptertZipStream());
-            File dir = new File(outputKatalog);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            try (OutputStream outputStream = new FileOutputStream(new File(dir, String.format(OUTPUT_FILNAVN, mottattMelding.getMeldingId())))) {
-                baos.writeTo(outputStream);
-                sendMottatt(svarSender, mottattMelding.getMeldingId().toString());
-            }
-        } catch (IOException e) {
-            sendFeil(svarSender, mottattMelding.getMeldingId().toString(), "Klarer ikke å hente ut " + INPUT_FILNAVN);
+            extractFilesFromZip(mottattMelding.getDekryptertZipStream(), mottattMelding.getMeldingId().toString());
+            sendMottatt(svarSender, mottattMelding.getMeldingId().toString());
+        } catch (Exception e) {
+            logger.error("Feil under mottak", e);
+            sendFeil(svarSender, mottattMelding.getMeldingId().toString(), "Klarer ikke å hente ut filer fra asice-filen");
         }
     }
 
-    private ByteArrayOutputStream getFilFraZip(ZipInputStream zip) throws IOException {
-        ByteArrayOutputStream outputStream = null;
+    private void extractFilesFromZip(ZipInputStream zip, String meldingsid) throws IOException {
+        File dir = new File(outputKatalog, meldingsid);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
         ZipEntry entry;
         while ((entry = zip.getNextEntry()) != null) {
-            if (entry.getName().equalsIgnoreCase(INPUT_FILNAVN)) {
-                outputStream = new ByteArrayOutputStream();
-                byte[] buf = new byte[1024];
-                int n;
-                while ((n = zip.read(buf, 0, 1024)) > -1) {
-                    outputStream.write(buf, 0, n);
-                }
-                return outputStream;
+            File file = new File(dir, entry.getName());
+            logger.info("{} lagres som {}", entry.getName(), file.getPath());
+            try (OutputStream outputStream = new FileOutputStream(file)) {
+                getFileAsByteArrayOutputStream(zip).writeTo(outputStream);
             }
+        }
+    }
+
+    private ByteArrayOutputStream getFileAsByteArrayOutputStream(ZipInputStream zip) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buf = new byte[1024];
+        int n;
+        while ((n = zip.read(buf, 0, 1024)) > -1) {
+            outputStream.write(buf, 0, n);
         }
         return outputStream;
     }
